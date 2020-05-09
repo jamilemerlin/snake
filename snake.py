@@ -12,14 +12,11 @@ DOWN = 3
 # COLORS
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-GRAY = (120, 120, 120)
 
 def random_position():
-    x = randint(0, 590)
-    y = randint(0, 790)
-    return (x//10 * 10, y//10 * 10)
+    x = randint(0, 500 // 20)
+    y = randint(0, 700 // 20)
+    return (x * 20, y * 20)
 
 def random_position_list(size):
     position = []
@@ -43,24 +40,42 @@ def snake_collision(snake):
 
 
 pygame.init()
-screen = pygame.display.set_mode((600, 800))
+screen_width = 500
+screen_height = 700
+screen_center = (screen_width // 2, screen_height // 2)
+screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Snake')
+all_image = pygame.image.load('./assets/snake-graphics.png')
 
 life = 3
 score = 0
 myfont = pygame.font.SysFont("monospace", 16)
-snake = [(320, 400), (310, 400), (300, 400)]
-snake_skin = pygame.Surface((10, 10))
-snake_skin.fill(WHITE)
+snake = [(280, 340), (260, 340), (240, 340)]
 snake_direction = RIGHT
 
-apple = pygame.Surface((10, 10))
-apple.fill(RED)
-apple_position = random_position()
+snake_head_up = all_image.subsurface(pygame.Rect(60, 0, 20, 20))
+snake_head_down = all_image.subsurface(pygame.Rect(80, 20, 20, 20))
+snake_head_left = all_image.subsurface(pygame.Rect(60, 20, 20, 20))
+snake_head_right = all_image.subsurface(pygame.Rect(80, 0, 20, 20))
 
-stone = pygame.Surface((10, 10))
-stone.fill(GRAY)
+snake_tail_up = all_image.subsurface(pygame.Rect(60, 40, 20, 20))
+snake_tail_down = all_image.subsurface(pygame.Rect(80, 60, 20, 20))
+snake_tail_left = all_image.subsurface(pygame.Rect(60, 60, 20, 20))
+snake_tail_right = all_image.subsurface(pygame.Rect(80, 40, 20, 20))
+
+snake_body_hor = all_image.subsurface(pygame.Rect(20, 0, 20, 20))
+snake_body_ver = all_image.subsurface(pygame.Rect(40, 20, 20, 20))
+
+snake_body_top_left = all_image.subsurface(pygame.Rect(0, 0, 20, 20))
+snake_body_top_right = all_image.subsurface(pygame.Rect(40, 0, 20, 20))
+snake_body_bottom_left = all_image.subsurface(pygame.Rect(0, 20, 20, 20))
+snake_body_bottom_right = all_image.subsurface(pygame.Rect(40, 40, 20, 20))
+
+apple_position = random_position()
+apple_image = all_image.subsurface(pygame.Rect(0, 60, 20, 20))
+
 stones_position = random_position_list(10)
+stone_image = all_image.subsurface(pygame.Rect(20, 60, 20, 20))
 
 clock = pygame.time.Clock()
 
@@ -72,7 +87,7 @@ def add_score():
 def snake_decrease_life():
     global life, snake, snake_direction
     life -= 1
-    snake = [(320, 400), (310, 400), (300, 400)]
+    snake = [(280, 340), (260, 340), (240, 340)]
     snake_direction = RIGHT
 
 def controls():
@@ -95,7 +110,7 @@ def controls():
 
 
 while True:
-    clock.tick(10)
+    clock.tick(7)
 
     if controls() == False:
         break
@@ -103,13 +118,13 @@ while True:
     tail = snake.pop()
 
     if snake_direction == RIGHT:
-        tail = (snake[0][0] + 10, snake[0][1])
+        tail = (snake[0][0] + 20, snake[0][1])
     if snake_direction == LEFT:
-        tail = (snake[0][0] - 10, snake[0][1])
+        tail = (snake[0][0] - 20, snake[0][1])
     if snake_direction == UP:
-        tail = (snake[0][0], snake[0][1] - 10)
+        tail = (snake[0][0], snake[0][1] - 20)
     if snake_direction == DOWN:
-        tail = (snake[0][0], snake[0][1] + 10)
+        tail = (snake[0][0], snake[0][1] + 20)
 
     snake.insert(0, tail)
 
@@ -121,7 +136,7 @@ while True:
     if collision_list(snake[0], stones_position):
         snake_decrease_life()
 
-    if (snake[0][0] < 0 or snake[0][0] > 590) or (snake[0][1] < 0 or snake[0][1] > 790):
+    if (snake[0][0] < 0 or snake[0][0] > screen_width - 20) or (snake[0][1] < 0 or snake[0][1] > screen_height - 20):
         snake_decrease_life()
 
     if snake_collision(snake) == False:
@@ -131,15 +146,60 @@ while True:
         break
 
     screen.fill(BLACK)
-    screen.blit(apple, apple_position)
-    for pos in snake:
-        screen.blit(snake_skin, pos)
+    screen.blit(apple_image, apple_position)
+    for i, pos in enumerate(snake):
+        if i == 0:
+            if snake_direction == RIGHT:
+                screen.blit(snake_head_right, pos)
+            if snake_direction == LEFT:
+                screen.blit(snake_head_left, pos)
+            if snake_direction == UP:
+                screen.blit(snake_head_up, pos)
+            if snake_direction == DOWN:
+                screen.blit(snake_head_down, pos)
+        elif i == len(snake)-1:
+            tail = snake[i]
+            last_body = snake[i - 1]
+            if last_body[0] < tail[0]:
+                screen.blit(snake_tail_left, pos)
+            if last_body[0] > tail[0]:
+                screen.blit(snake_tail_right, pos)
+            if last_body[1] < tail[1]:
+                screen.blit(snake_tail_up, pos)
+            if last_body[1] > tail[1]:
+                screen.blit(snake_tail_down, pos)
+        else:
+            mid_body = snake[i]
+            next_body = snake[i + 1]
+            prev_body = snake[i - 1]
+            mx = mid_body[0]
+            my = mid_body[1]
+            px = prev_body[0]
+            py = prev_body[1]
+            nx = next_body[0]
+            ny = next_body[1]
+            if prev_body[1] == next_body[1]:
+                screen.blit(snake_body_hor, pos)
+            elif prev_body[0] == next_body[0]:
+                screen.blit(snake_body_ver, pos)
+            elif (my == ny and mx > nx and mx == px and my < py) or (my == py and mx > px and mx == nx and my < ny):
+                screen.blit(snake_body_top_right, pos)
+            elif (my == ny and mx < nx and mx == px and my < py) or (my == py and mx < px and mx == nx and my < ny):
+                screen.blit(snake_body_top_left, pos)
+            elif (mx == nx and my > ny and my == py and mx > px) or (mx == px and my > py and my == ny and mx > nx):
+                screen.blit(snake_body_bottom_right, pos)
+            else:
+                screen.blit(snake_body_bottom_left, pos)
+
+
     for pos in stones_position:
-        screen.blit(stone, pos)
+        screen.blit(stone_image, pos)
+
+
     scoretext = myfont.render('SCORE:'+str(score), 1, (255, 255, 255))
     screen.blit(scoretext, (10, 10))
     lifetext = myfont.render('LIFE:'+str(life), 1, (255, 255, 255))
-    screen.blit(lifetext, (520, 10))
+    screen.blit(lifetext, (screen_width - 80, 10))
 
     pygame.display.update()
 
