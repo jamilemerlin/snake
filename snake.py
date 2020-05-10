@@ -107,7 +107,7 @@ clock = pygame.time.Clock()
 while True:
     clock.tick(10)
 
-    if controls() == False:
+    if controls() is False:
         break
 
     tail = snake.pop()
@@ -134,7 +134,7 @@ while True:
     if (snake[0][0] < 0 or snake[0][0] > 590) or (snake[0][1] < 0 or snake[0][1] > 790):
         snake_decrease_life()
 
-    if snake_collision(snake) == False:
+    if snake_collision(snake) is False:
         snake_decrease_life()
 
     if life == 0:
