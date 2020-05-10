@@ -55,10 +55,10 @@ screen_center = (screen_width // 2, screen_height // 2)
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Snake')
 all_image = pygame.image.load('./assets/snake-graphics.png')
+myfont = pygame.font.SysFont("monospace", 16)
 
 life = 3
 score = 0
-myfont = pygame.font.SysFont("monospace", 16)
 snake = [(280, 340), (260, 340), (240, 340)]
 snake_direction = RIGHT
 
@@ -82,12 +82,11 @@ snake_body_bottom_right = all_image.subsurface(pygame.Rect(40, 40, 20, 20))
 
 clock = pygame.time.Clock()
 
-stones_position = random_position_list(10)
+stones_position = random_position_list(50)
 stone_image = all_image.subsurface(pygame.Rect(20, 60, 20, 20))
 
 apple_position = random_apple_position(stones_position)
 apple_image = all_image.subsurface(pygame.Rect(0, 60, 20, 20))
-
 
 def add_score():
     global score
@@ -101,7 +100,7 @@ def snake_decrease_life():
     snake_direction = RIGHT
 
 def controls():
-    global snake_direction
+    global snake_direction, life, score, snake
     for event in pygame.event.get():
         if event.type == QUIT:
             return False
@@ -117,6 +116,12 @@ def controls():
                 snake_direction = RIGHT
             if event.key == K_LEFT:
                 snake_direction = LEFT
+            if event.key == K_SPACE:
+                life = 3
+                score = 0
+                snake = [(280, 340), (260, 340), (240, 340)]
+                snake_direction = RIGHT
+
 
 
 while True:
@@ -153,8 +158,15 @@ while True:
         snake.append(snake[-1])
         add_score()
 
-    if life == 0:
-        break
+    if life <= 0:
+        screen.fill(BLACK)
+        newgame = myfont.render(f'PRESS SPACE FOR NEW GAME', 1, (255, 255, 255))
+        quitgame = myfont.render(f'OR ESC TO QUIT', 1, (255, 255, 255))
+        screen.blit(newgame, screen_center)
+        screen.blit(quitgame, (screen_center[0], screen_center[1]+20))
+        pygame.display.update()
+        continue
+
 
     screen.fill(BLACK)
     screen.blit(apple_image, apple_position)
