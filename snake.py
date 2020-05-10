@@ -143,9 +143,10 @@ while True:
         screen.blit(snake_skin, pos)
     for pos in stones_position:
         screen.blit(stone, pos)
-    scoretext = myfont.render('SCORE:'+str(score), 1, (255, 255, 255))
+
+    scoretext = myfont.render("SCORE:{}".format(score), 1, (255, 255, 255))
     screen.blit(scoretext, (10, 10))
-    lifetext = myfont.render('LIFE:'+str(life), 1, (255, 255, 255))
+    lifetext = myfont.render("LIFE:{}".format(life), 1, (255, 255, 255))
     screen.blit(lifetext, (520, 10))
 
     pygame.display.update()
