@@ -50,28 +50,6 @@ def snake_collision(snake):
             return False
 
 
-pygame.init()
-screen = pygame.display.set_mode((600, 800))
-pygame.display.set_caption('Snake')
-
-life = 3
-score = 0
-myfont = pygame.font.SysFont("monospace", 16)
-snake = [(320, 400), (310, 400), (300, 400)]
-snake_skin = pygame.Surface((10, 10))
-snake_skin.fill(WHITE)
-snake_direction = RIGHT
-
-apple = pygame.Surface((10, 10))
-apple.fill(RED)
-apple_position = random_position()
-
-stone = pygame.Surface((10, 10))
-stone.fill(GRAY)
-stones_position = random_position_list(10)
-
-clock = pygame.time.Clock()
-
 def add_score():
     global score
     score += 10
@@ -101,6 +79,29 @@ def controls():
                 snake_direction = RIGHT
             if event.key == K_LEFT:
                 snake_direction = LEFT
+
+
+pygame.init()
+screen = pygame.display.set_mode((600, 800))
+pygame.display.set_caption('Snake')
+
+life = 3
+score = 0
+myfont = pygame.font.SysFont("monospace", 16)
+snake = [(320, 400), (310, 400), (300, 400)]
+snake_skin = pygame.Surface((10, 10))
+snake_skin.fill(WHITE)
+snake_direction = RIGHT
+
+apple = pygame.Surface((10, 10))
+apple.fill(RED)
+apple_position = random_position()
+
+stone = pygame.Surface((10, 10))
+stone.fill(GRAY)
+stones_position = random_position_list(10)
+
+clock = pygame.time.Clock()
 
 
 while True:
