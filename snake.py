@@ -82,7 +82,7 @@ snake_body_bottom_right = all_image.subsurface(pygame.Rect(40, 40, 20, 20))
 
 clock = pygame.time.Clock()
 
-stones_position = random_position_list(50)
+stones_position = random_position_list(15)
 stone_image = all_image.subsurface(pygame.Rect(20, 60, 20, 20))
 
 apple_position = random_apple_position(stones_position)
