@@ -71,13 +71,13 @@ def controls():
         if event.type == KEYDOWN:
             if event.key == K_ESCAPE:
                 return False
-            if event.key == K_UP:
+            if event.key == K_UP and snake_direction != DOWN:
                 snake_direction = UP
-            if event.key == K_DOWN:
+            if event.key == K_DOWN and snake_direction != UP:
                 snake_direction = DOWN
-            if event.key == K_RIGHT:
+            if event.key == K_RIGHT and snake_direction != LEFT:
                 snake_direction = RIGHT
-            if event.key == K_LEFT:
+            if event.key == K_LEFT and snake_direction != RIGHT:
                 snake_direction = LEFT
 
 
