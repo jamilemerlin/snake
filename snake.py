@@ -24,6 +24,15 @@ def random_position_list(size):
         position.append(random_position())
     return position
 
+def random_apple_position(stones):
+    apple_position = random_position()
+    while True:
+        for item in stones:
+            if apple_position == item:
+                apple_position = random_position()
+            else:
+                return apple_position
+
 def collision(cell1, cell2):
     return cell1[0] == cell2[0] and cell1[1] == cell2[1]
 
@@ -71,13 +80,14 @@ snake_body_top_right = all_image.subsurface(pygame.Rect(40, 0, 20, 20))
 snake_body_bottom_left = all_image.subsurface(pygame.Rect(0, 20, 20, 20))
 snake_body_bottom_right = all_image.subsurface(pygame.Rect(40, 40, 20, 20))
 
-apple_position = random_position()
-apple_image = all_image.subsurface(pygame.Rect(0, 60, 20, 20))
+clock = pygame.time.Clock()
 
 stones_position = random_position_list(10)
 stone_image = all_image.subsurface(pygame.Rect(20, 60, 20, 20))
 
-clock = pygame.time.Clock()
+apple_position = random_apple_position(stones_position)
+apple_image = all_image.subsurface(pygame.Rect(0, 60, 20, 20))
+
 
 def add_score():
     global score
@@ -128,10 +138,6 @@ while True:
 
     snake.insert(0, tail)
 
-    if collision(snake[0], apple_position):
-        apple_position = random_position()
-        snake.append(snake[-1])
-        add_score()
 
     if collision_list(snake[0], stones_position):
         snake_decrease_life()
@@ -141,6 +147,11 @@ while True:
 
     if snake_collision(snake) == False:
         snake_decrease_life()
+
+    if collision(snake[0], apple_position):
+        apple_position = random_apple_position(stones_position)
+        snake.append(snake[-1])
+        add_score()
 
     if life == 0:
         break
@@ -160,6 +171,8 @@ while True:
         elif i == len(snake)-1:
             tail = snake[i]
             last_body = snake[i - 1]
+            if last_body == tail:
+                last_body = snake[i - 2]
             if last_body[0] < tail[0]:
                 screen.blit(snake_tail_left, pos)
             if last_body[0] > tail[0]:
@@ -172,13 +185,16 @@ while True:
             mid_body = snake[i]
             next_body = snake[i + 1]
             prev_body = snake[i - 1]
+            tail = snake[-1]
             mx = mid_body[0]
             my = mid_body[1]
             px = prev_body[0]
             py = prev_body[1]
             nx = next_body[0]
             ny = next_body[1]
-            if prev_body[1] == next_body[1]:
+            if mid_body == tail:
+                continue
+            elif prev_body[1] == next_body[1]:
                 screen.blit(snake_body_hor, pos)
             elif prev_body[0] == next_body[0]:
                 screen.blit(snake_body_ver, pos)
@@ -199,7 +215,9 @@ while True:
     scoretext = myfont.render('SCORE:'+str(score), 1, (255, 255, 255))
     screen.blit(scoretext, (10, 10))
     lifetext = myfont.render('LIFE:'+str(life), 1, (255, 255, 255))
-    screen.blit(lifetext, (screen_width - 80, 10))
+    screen.blit(lifetext, (screen_width - 300, 10))
+    quittext = myfont.render('ESC PARA SAIR', 1, (255, 255, 255))
+    screen.blit(quittext, (screen_width - 140, 10))
 
     pygame.display.update()
 
