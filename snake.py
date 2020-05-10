@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+
 import pygame
 from pygame.locals import (QUIT, KEYDOWN, K_ESCAPE, K_UP, K_DOWN, K_RIGHT, K_LEFT)
 from random import randint
