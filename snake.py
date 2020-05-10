@@ -1,5 +1,5 @@
 import pygame
-from pygame.locals import *
+from pygame.locals import (QUIT, KEYDOWN, K_ESCAPE, K_UP, K_DOWN, K_RIGHT, K_LEFT)
 from random import randint
 
 
@@ -16,10 +16,12 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 GRAY = (120, 120, 120)
 
+
 def random_position():
     x = randint(0, 590)
     y = randint(0, 790)
     return (x//10 * 10, y//10 * 10)
+
 
 def random_position_list(size):
     position = []
@@ -27,14 +29,17 @@ def random_position_list(size):
         position.append(random_position())
     return position
 
+
 def collision(cell1, cell2):
     return cell1[0] == cell2[0] and cell1[1] == cell2[1]
+
 
 def collision_list(cell, list):
     for item in list:
         if collision(cell, item):
             return True
     return False
+
 
 def snake_collision(snake):
     for position in snake[1:]:
@@ -74,6 +79,7 @@ def snake_decrease_life():
     life -= 1
     snake = [(320, 400), (310, 400), (300, 400)]
     snake_direction = RIGHT
+
 
 def controls():
     global snake_direction
@@ -132,6 +138,7 @@ while True:
 
     screen.fill(BLACK)
     screen.blit(apple, apple_position)
+
     for pos in snake:
         screen.blit(snake_skin, pos)
     for pos in stones_position:
