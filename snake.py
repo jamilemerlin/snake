@@ -228,7 +228,7 @@ while True:
     screen.blit(scoretext, (10, 10))
     lifetext = myfont.render('LIFE:'+str(life), 1, (255, 255, 255))
     screen.blit(lifetext, (screen_width - 300, 10))
-    quittext = myfont.render('ESC PARA SAIR', 1, (255, 255, 255))
+    quittext = myfont.render('ESC TO QUIT', 1, (255, 255, 255))
     screen.blit(quittext, (screen_width - 140, 10))
 
     pygame.display.update()
