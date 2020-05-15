@@ -105,7 +105,7 @@ def snake_decrease_life():
 
 
 def controls():
-    global snake_direction, life, score, snake
+    global snake_direction, life, score, snake, stones_position, apple_position
     for event in pygame.event.get():
         if event.type == QUIT:
             return False
@@ -126,6 +126,8 @@ def controls():
                 score = 0
                 snake = [(280, 340), (260, 340), (240, 340)]
                 snake_direction = RIGHT
+                stones_position = random_position_list(15)
+                apple_position = random_apple_position(stones_position)
 
 
 while True:
