@@ -13,10 +13,12 @@ DOWN = 3
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
+
 def random_position():
     x = randint(0, 500 // 20)
     y = randint(0, 700 // 20)
     return (x * 20, y * 20)
+
 
 def random_position_list(size):
     position = []
@@ -24,23 +26,24 @@ def random_position_list(size):
         position.append(random_position())
     return position
 
+
 def random_apple_position(stones):
     apple_position = random_position()
-    while True:
-        for item in stones:
-            if apple_position == item:
-                apple_position = random_position()
-            else:
-                return apple_position
+    while collision_list(apple_position, stones):
+        apple_position = random_position()
+    return apple_position
+
 
 def collision(cell1, cell2):
     return cell1[0] == cell2[0] and cell1[1] == cell2[1]
+
 
 def collision_list(cell, list):
     for item in list:
         if collision(cell, item):
             return True
     return False
+
 
 def snake_collision(snake):
     for position in snake[1:]:
@@ -88,6 +91,7 @@ stone_image = all_image.subsurface(pygame.Rect(20, 60, 20, 20))
 apple_position = random_apple_position(stones_position)
 apple_image = all_image.subsurface(pygame.Rect(0, 60, 20, 20))
 
+
 def add_score():
     global score
     score += 10
@@ -99,6 +103,7 @@ def snake_decrease_life():
     snake = [(280, 340), (260, 340), (240, 340)]
     snake_direction = RIGHT
 
+
 def controls():
     global snake_direction, life, score, snake
     for event in pygame.event.get():
@@ -108,13 +113,13 @@ def controls():
         if event.type == KEYDOWN:
             if event.key == K_ESCAPE:
                 return False
-            if event.key == K_UP:
+            if event.key == K_UP and snake_direction != DOWN:
                 snake_direction = UP
-            if event.key == K_DOWN:
+            if event.key == K_DOWN and snake_direction != UP:
                 snake_direction = DOWN
-            if event.key == K_RIGHT:
+            if event.key == K_RIGHT and snake_direction != LEFT:
                 snake_direction = RIGHT
-            if event.key == K_LEFT:
+            if event.key == K_LEFT and snake_direction != RIGHT:
                 snake_direction = LEFT
             if event.key == K_SPACE:
                 life = 3
@@ -123,11 +128,10 @@ def controls():
                 snake_direction = RIGHT
 
 
-
 while True:
     clock.tick(7)
 
-    if controls() == False:
+    if controls() is False:
         break
 
     tail = snake.pop()
@@ -143,14 +147,13 @@ while True:
 
     snake.insert(0, tail)
 
-
     if collision_list(snake[0], stones_position):
         snake_decrease_life()
 
     if (snake[0][0] < 0 or snake[0][0] > screen_width - 20) or (snake[0][1] < 0 or snake[0][1] > screen_height - 20):
         snake_decrease_life()
 
-    if snake_collision(snake) == False:
+    if snake_collision(snake) is False:
         snake_decrease_life()
 
     if collision(snake[0], apple_position):
@@ -167,9 +170,9 @@ while True:
         pygame.display.update()
         continue
 
-
     screen.fill(BLACK)
     screen.blit(apple_image, apple_position)
+
     for i, pos in enumerate(snake):
         if i == 0:
             if snake_direction == RIGHT:
@@ -219,19 +222,16 @@ while True:
             else:
                 screen.blit(snake_body_bottom_left, pos)
 
-
     for pos in stones_position:
         screen.blit(stone_image, pos)
 
-
-    scoretext = myfont.render('SCORE:'+str(score), 1, (255, 255, 255))
+    scoretext = myfont.render("SCORE:{}".format(score), 1, (255, 255, 255))
     screen.blit(scoretext, (10, 10))
-    lifetext = myfont.render('LIFE:'+str(life), 1, (255, 255, 255))
+    lifetext = myfont.render("LIFE:{}".format(life), 1, (255, 255, 255))
     screen.blit(lifetext, (screen_width - 300, 10))
     quittext = myfont.render('ESC TO QUIT', 1, (255, 255, 255))
     screen.blit(quittext, (screen_width - 140, 10))
 
     pygame.display.update()
-
 
 pygame.quit()
