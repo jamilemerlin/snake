@@ -16,15 +16,18 @@ WHITE = (255, 255, 255)
 
 def random_position():
     x = randint(0, 500 // 20)
-    y = randint(0, 700 // 20)
+    y = randint(2, 700 // 20)
     return (x * 20, y * 20)
 
 
 def random_position_list(size):
-    position = []
+    positions = []
     for p in range(size):
-        position.append(random_position())
-    return position
+        position = random_position()
+        while position[1] == 340:  # Don't create items on spawn line.
+            position = random_position()
+        positions.append(position)
+    return positions
 
 
 def random_apple_position(stones):
@@ -98,10 +101,12 @@ def add_score():
 
 
 def snake_decrease_life():
-    global life, snake, snake_direction
+    global life, snake, snake_direction, stones_position, apple_position
     life -= 1
     snake = [(280, 340), (260, 340), (240, 340)]
     snake_direction = RIGHT
+    stones_position = random_position_list(15)
+    apple_position = random_apple_position(stones_position)
 
 
 def controls():
